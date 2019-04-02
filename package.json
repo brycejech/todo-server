@@ -4,7 +4,8 @@
   "description": "Node/Postgres backed to-do server",
   "main": "index.js",
   "scripts": {
-    "test": "jest --verbose"
+    "test": "jest --verbose",
+    "start": "nodemon ."
   },
   "repository": {
     "type": "git",
