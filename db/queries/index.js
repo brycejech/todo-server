@@ -4,6 +4,7 @@ const fs   = require('fs'),
       path = require('path');
 
 const files = [
+    // ToDo Items
     {
         name: 'todo-item-create',
         file: 'todo_item/create.sql',
@@ -27,9 +28,24 @@ const files = [
         file: 'todo_item/get-by-id.sql',
         firstRow: true
     },
+    // ToDo Lists
     {
         name: 'todo-list-create',
         file: 'todo_list/create.sql',
+        firstRow: true
+    },
+    {
+        name: 'todo-list-get-all',
+        file: 'todo_list/get-all.sql'
+    },
+    {
+        name: 'todo-list-get-by-id',
+        file: 'todo_list/get-by-id.sql',
+        firstRow: true
+    },
+    {
+        name: 'todo-list-get-by-uuid',
+        file: 'todo_list/get-by-uuid.sql',
         firstRow: true
     }
 ];
