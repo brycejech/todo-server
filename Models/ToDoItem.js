@@ -52,7 +52,7 @@ ToDoItem.get = function getToDoItems(filter){
         return ToDoItem.getById(filter.id);
     }
     if(filter.hasOwnProperty('uuid')){
-        return ToDoItem.getById(filter.uuid);
+        return ToDoItem.getByUuid(filter.uuid);
     }
     return Promise.resolve();
 }
