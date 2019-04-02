@@ -33,4 +33,44 @@ ToDoList.create = async function createToDoList(o){
     catch(e){ throw e }
 }
 
+ToDoList.getAll = async function getAllToDoLists(){
+    try{
+        const results = await db.q('todo-list-get-all');
+
+        if(results.length){
+            return results.map(list => new ToDoList(list));
+        }
+        return [];
+    }
+    catch(e){ throw e }
+}
+
+ToDoList.get = function getToDoLists(filter){
+    if(filter.hasOwnProperty('id')){
+        return ToDoList.getById(filter.id);
+    }
+    if(filter.hasOwnProperty('uuid')){
+        return ToDoList.getByUuid(filter.uuid);
+    }
+    return Promise.resolve();
+}
+
+ToDoList.getById = async function getToDoListById(id){
+    try{
+        const result = await db.q('todo-list-get-by-id', [ id ]);
+
+        return new ToDoList(result);
+    }
+    catch(e){ throw e }
+}
+
+ToDoList.getByUuid = async function getToDoListByUuid(uuid){
+    try{
+        const result = await db.q('todo-list-get-by-uuid', [ uuid ]);
+
+        return new ToDoList(result);
+    }
+    catch(e){ throw e }
+}
+
 module.exports = ToDoList;
