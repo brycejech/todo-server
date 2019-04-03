@@ -6,30 +6,32 @@ const db   = require('../db'),
 const slugify = require('../lib/slugify');
 
 function ToDoList(o){
-    this.id       = o.id;
-    this.uuid     = o.uuid;
-    this.title    = o.title;
-    this.slug     = o.slug;
-    this.created  = o.created;
-    this.modified = o.modified;
+    this.id          = o.id;
+    this.uuid        = o.uuid;
+    this.title       = o.title;
+    this.slug        = o.slug;
+    this.description = o.description;
+    this.created     = o.created;
+    this.modified    = o.modified;
 
     return this;
 }
 
 ToDoList.prototype.save = async function saveToDoList(){
     const params = [
-        this.id, this.title, slugify(this.title)
+        this.id, this.title, slugify(this.title), this.description
     ];
 
     try{
         const updated = await db.q('todo-list-update', params);
 
-        this.id       = updated.id;
-        this.uuid     = updated.uuid;
-        this.title    = updated.title;
-        this.slug     = updated.slug;
-        this.created  = updated.created;
-        this.modified = updated.modified;
+        this.id          = updated.id;
+        this.uuid        = updated.uuid;
+        this.title       = updated.title;
+        this.slug        = updated.slug;
+        this.description = updated.description;
+        this.created     = updated.created;
+        this.modified    = updated.modified;
 
         return this;
     }
@@ -56,7 +58,7 @@ ToDoList.create = async function createToDoList(o){
     }
 
     const params = [
-        uuid(), o.title, slugify(o.title)
+        uuid(), o.title, slugify(o.title), o.description
     ];
 
     try{

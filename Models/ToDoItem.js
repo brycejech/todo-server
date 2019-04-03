@@ -5,34 +5,39 @@ const db      = require('../db'),
       slugify = require('../lib/slugify');
 
 function ToDoItem(o){
-    this.id       = o.id;
-    this.uuid     = o.uuid;
-    this.title    = o.title;
-    this.slug     = o.slug;
-    this.list     = o.list;
-    this.due      = o.due;
-    this.created  = o.created;
-    this.modified = o.modified;
+    this.id          = o.id;
+    this.uuid        = o.uuid;
+    this.title       = o.title;
+    this.slug        = o.slug;
+    this.description = o.description;
+    this.complete    = o.complete;
+    this.list        = o.list;
+    this.due         = o.due;
+    this.created     = o.created;
+    this.modified    = o.modified;
 
     return this;
 }
 
 ToDoItem.prototype.save = async function saveToDoItem(){
     const params = [
-        this.id, this.title, slugify(this.title), this.list, this.due || null
+        this.id, this.title, slugify(this.title), this.description,
+        this.complete, this.list, this.due || null
     ];
 
     try{
         const updated = await db.query('todo-item-update', params);
 
-        this.id       = updated.id;
-        this.uuid     = updated.uuid;
-        this.title    = updated.title;
-        this.slug     = updated.slug;
-        this.list     = updated.list;
-        this.due      = updated.due;
-        this.created  = updated.created;
-        this.modified = updated.modified;
+        this.id          = updated.id;
+        this.uuid        = updated.uuid;
+        this.title       = updated.title;
+        this.slug        = updated.slug;
+        this.description = updated.description;
+        this.complete    = updated.complete;
+        this.list        = updated.list;
+        this.due         = updated.due;
+        this.created     = updated.created;
+        this.modified    = updated.modified;
 
         return this;
     }
@@ -58,7 +63,7 @@ ToDoItem.create = async function createToDoItem(o){
     }
 
     const params = [
-        uuid(), o.title, slugify(o.title), o.list
+        uuid(), o.title, slugify(o.title), o.description, o.list
     ];
 
     try{
