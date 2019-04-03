@@ -28,6 +28,15 @@ const files = [
         file: 'todo_item/get-by-id.sql',
         firstRow: true
     },
+    {
+        name: 'todo-item-delete',
+        file: 'todo_item/delete.sql'
+    },
+    {
+        name: 'todo-item-update',
+        file: 'todo_item/update.sql',
+        firstRow: true
+    },
     // ToDo Lists
     {
         name: 'todo-list-create',
@@ -46,6 +55,15 @@ const files = [
     {
         name: 'todo-list-get-by-uuid',
         file: 'todo_list/get-by-uuid.sql',
+        firstRow: true
+    },
+    {
+        name: 'todo-list-delete',
+        file: 'todo_list/delete.sql'
+    },
+    {
+        name: 'todo-list-update',
+        file: 'todo_list/update.sql',
         firstRow: true
     }
 ];
