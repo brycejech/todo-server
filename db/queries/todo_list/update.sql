@@ -3,9 +3,10 @@ UPDATE
     todo_list
 
 SET
-    title = $2,
-    slug  = $3,
-    
+    title       = $2,
+    slug        = $3,
+    description = $4,
+
     modified = now() at time zone 'utc'
 
 WHERE

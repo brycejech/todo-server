@@ -4,6 +4,8 @@ SELECT
     uuid,
     title,
     slug,
+    description,
+    complete,
     list,
     due,
     created,

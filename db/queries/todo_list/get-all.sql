@@ -4,6 +4,7 @@ SELECT
     uuid,
     title,
     slug,
+    description,
     created,
     modified
 
