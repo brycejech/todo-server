@@ -16,6 +16,40 @@ function ToDoList(o){
     return this;
 }
 
+ToDoList.prototype.save = async function saveToDoList(){
+    const params = [
+        this.id, this.title, slugify(this.title)
+    ];
+
+    try{
+        const updated = await db.q('todo-list-update', params);
+
+        this.id       = updated.id;
+        this.uuid     = updated.uuid;
+        this.title    = updated.title;
+        this.slug     = updated.slug;
+        this.created  = updated.created;
+        this.modified = updated.modified;
+
+        return this;
+    }
+    catch(e){
+        return false;
+    }
+}
+
+ToDoList.prototype.delete = async function deleteToDoList(){
+    try{
+        const deleted = await db.q('todo-list-delete', [ this.id ]);
+
+        return true;
+    }
+    catch(e){
+        console.log(e);
+        return false;
+    }
+}
+
 ToDoList.create = async function createToDoList(o){
     if(!o.title){
         throw new Error('ToDo List must have a title');

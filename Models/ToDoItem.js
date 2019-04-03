@@ -17,6 +17,41 @@ function ToDoItem(o){
     return this;
 }
 
+ToDoItem.prototype.save = async function saveToDoItem(){
+    const params = [
+        this.id, this.title, slugify(this.title), this.list, this.due || null
+    ];
+
+    try{
+        const updated = await db.query('todo-item-update', params);
+
+        this.id       = updated.id;
+        this.uuid     = updated.uuid;
+        this.title    = updated.title;
+        this.slug     = updated.slug;
+        this.list     = updated.list;
+        this.due      = updated.due;
+        this.created  = updated.created;
+        this.modified = updated.modified;
+
+        return this;
+    }
+    catch(e){
+        return false;
+    }
+}
+
+ToDoItem.prototype.delete = async function deleteToDoItem(){
+    try{
+        const deleted = await db.query('todo-item-delete', [ this.id ]);
+
+        return true;
+    }
+    catch(e){
+        return false;
+    }
+}
+
 ToDoItem.create = async function createToDoItem(o){
     if(!(o.title && o.list)){
         throw new Error('Title and list are required');
