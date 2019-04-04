@@ -94,7 +94,7 @@ ToDoItem.get = function getToDoItems(filter){
     if(filter.hasOwnProperty('uuid')){
         return ToDoItem.getByUuid(filter.uuid);
     }
-    return Promise.resolve();
+    return Promise.resolve({});
 }
 
 ToDoItem.getByList = async function getToDoItemByList(listId){
@@ -109,20 +109,22 @@ ToDoItem.getByList = async function getToDoItemByList(listId){
 
 ToDoItem.getById = async function getToDoItemById(id){
     try{
-        const result = await db.q('todo-item-get-by-id', [ id ]),
-              item   = new ToDoItem(result);
+        const result = await db.q('todo-item-get-by-id', [ id ]);
 
-        return item;
+        if(result){
+            return new ToDoItem(result);
+        }
     }
     catch(e){ throw e }
 }
 
 ToDoItem.getByUuid = async function getToDoItemByUuid(uuid){
     try{
-        const result = await db.q('todo-item-get-by-uuid', [ uuid ]),
-              item   = new ToDoItem(result);
+        const result = await db.q('todo-item-get-by-uuid', [ uuid ]);
 
-        return item
+        if(result){
+            return new ToDoItem(result);
+        }
     }
     catch(e){ throw e }
 }
