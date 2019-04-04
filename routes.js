@@ -57,6 +57,19 @@ router.post('/lists', async (req, res, next) => {
     catch(e){ return sendError(res, e) }
 });
 
+router.delete('/lists/:id', async (req, res, next) => {
+    const id = req.params.id;
+
+    try{
+        const list = await Models.ToDoList.get({ id });
+
+        if(!list){ return notFound(res) }
+
+        return res.json({ delted: await list.delete() });
+    }
+    catch(e){ return sendError(res, e) }
+});
+
 // Delete a list
 router.delete('/lists/:id', async (req, res, next) => {
     const id = req.params.id;
