@@ -57,6 +57,32 @@ router.post('/lists', async (req, res, next) => {
     catch(e){ return sendError(res, e) }
 });
 
+router.put('/lists/:id', async (req, res, next) => {
+    const id = req.params.id;
+
+    try{
+        const list = await Models.ToDoList.get({ id });
+
+        if(!list){ return notFound(res) }
+
+        const allowedProps = [ 'title', 'description' ];
+
+        allowedProps.forEach(prop => {
+            if(req.body.hasOwnProperty(prop)){
+                list[prop] = req.body[prop];
+            }
+        });
+
+        const updated = await list.save();
+        if(updated){
+            return res.json(updated);
+        }
+
+        return sendError(res, new Error('List not updated'));
+    }
+    catch(e){ return sendError(res, e) }
+});
+
 router.delete('/lists/:id', async (req, res, next) => {
     const id = req.params.id;
 
@@ -153,9 +179,7 @@ router.put('/items/:id', async (req, res, next) => {
             return res.json(updated);
         }
 
-        const err = new Error('Item not saved');
-
-        return sendError(res, err);
+        return sendError(res, new Error('Item not updated'));
     }
     catch(e){ return sendError(res, e) }
 });
