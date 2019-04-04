@@ -1,7 +1,10 @@
 'use strict';
 
-const router = require('express').Router(),
-      Models = require('./Models');
+const router  = require('express').Router(),
+      Models  = require('./Models'),
+      slugify = require('./lib/slugify');
+
+const { sendError, notFound } = require('./lib/http-helper');
 
 router.get('/', (req, res, next) => {
     return res.json({ message: 'ToDo Application Server' });
@@ -20,15 +23,9 @@ router.get('/healthcheck', (req, res, next) => {
 // Get all lists
 router.get('/lists', async (req, res, next) => {
     try{
-        const lists = await Models.ToDoList.getAll();
-
-        return res.json(lists);
+        return res.json(await Models.ToDoList.getAll());
     }
-    catch(e){
-        return res.status(500).json({
-            message: 'Server error'
-        });
-    }
+    catch(e){ return sendError(res, e) }
 });
 
 // Get list by ID
@@ -38,19 +35,40 @@ router.get('/lists/:id', async (req, res, next) => {
     try{
         const list = await Models.ToDoList.get({ id });
 
-        if(!list){
-            return res.status(404).json({
-                message: 'Not found'
-            });
-        }
-
-        return res.json(list);
+        return list ? res.json(list) : notFound(res);
     }
-    catch(e){
-        return res.status(500).json({
-            message: 'Server error'
+    catch(e){ return sendError(res, e) }
+});
+
+router.post('/lists', async (req, res, next) => {
+    const { title, description } = req.body;
+
+    if(!title){
+        return res.status(400).json({
+            message: 'Title is required'
         });
     }
+
+    try{
+        const list = await Models.ToDoList.create({ title, description });
+
+        return res.status(201).json(list);
+    }
+    catch(e){ return sendError(res, e) }
+});
+
+// Delete a list
+router.delete('/lists/:id', async (req, res, next) => {
+    const id = req.params.id;
+
+    try{
+        const list = await Models.ToDoList.get({ id });
+
+        if(!list){ return notFound(res) }
+
+        return res.json({ success: await list.delete() });
+    }
+    catch(e){ return sendError(res, e) }
 });
 
 
@@ -63,15 +81,9 @@ router.get('/lists/:id', async (req, res, next) => {
 // Get all items
 router.get('/items', async (req, res, next) => {
     try{
-        const items = await Models.ToDoItem.getAll();
-
-        return res.json(items);
+        return res.json(await Models.ToDoItem.getAll());
     }
-    catch(e){
-        return res.status(500).json({
-            message: 'Server error'
-        });
-    }
+    catch(e){ return sendError(res, e) }
 });
 
 // Get item by ID
@@ -81,19 +93,71 @@ router.get('/items/:id', async (req, res, next) => {
     try{
         const item = await Models.ToDoItem.get({ id });
 
-        if(!item){
-            return res.status(404).json({
-                message: 'Not found'
-            });
-        }
+        if(!item){ return notFound(res) }
 
         return res.json(item);
     }
-    catch(e){
-        return res.status(500).json({
-            message: 'Server error'
+    catch(e){ return sendError(res, e) }
+});
+
+router.post('/items', async (req, res, next) => {
+    const { title, list, description } = req.body;
+
+    if(!(list && title)){
+        return res.status(400).json({
+            message: 'Title and List are required'
         });
     }
+
+    try{
+        const item = await Models.ToDoItem.create({ title, list, description });
+
+        return res.status(201).json(item);
+    }
+    catch(e){ return sendError(res, e) }
+});
+
+router.put('/items/:id', async (req, res, next) => {
+    const id = req.params.id;
+
+    try{
+        const item = await Models.ToDoItem.get({ id });
+
+        if(!item){ return notFound(res) }
+
+        // Only allow certain props to be set by user
+        const allowedProps = [
+            'title', 'description', 'complete', 'due'
+        ];
+        allowedProps.forEach(prop => {
+            if(req.body.hasOwnProperty(prop)){
+                item[prop] = req.body[prop];
+            }
+        });
+
+        const updated = await item.save();
+        if(updated){
+            return res.json(updated);
+        }
+
+        const err = new Error('Item not saved');
+
+        return sendError(res, err);
+    }
+    catch(e){ return sendError(res, e) }
+});
+
+router.delete('/items/:id', async (req, res, next) => {
+    const id = req.params.id;
+
+    try{
+        const item = await Models.ToDoItem.get({ id });
+
+        if(!item){ return notFound(res) }
+
+        return res.json({ success: await item.delete() });
+    }
+    catch(e){ return sendError(res, e) }
 });
 
 
