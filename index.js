@@ -16,9 +16,10 @@ const jsonBody = bodyParser.json(),
       urlBody  = bodyParser.urlencoded({ extended: true });
 server.use(jsonBody, urlBody);
 
-// Remove "X-Powered-By" header
+// Remove "X-Powered-By" header, enable CORS
 server.use((req, res, next) => {
     res.removeHeader('X-Powered-By');
+    res.setHeader('Access-Control-Allow-Origin', '*');
     next();
 });
 
