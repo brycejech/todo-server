@@ -13,6 +13,7 @@ function ToDoList(o){
     this.description = o.description;
     this.created     = o.created;
     this.modified    = o.modified;
+    this.items       = [];
 
     return this;
 }
