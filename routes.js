@@ -4,7 +4,8 @@ const router  = require('express').Router(),
       Models  = require('./Models'),
       slugify = require('./lib/slugify');
 
-const { sendError, notFound } = require('./lib/http-helper');
+const { ToDoListService }     = require('./services'),
+      { sendError, notFound } = require('./lib/http-helper');
 
 router.get('/', (req, res, next) => {
     return res.json({ message: 'ToDo Application Server' });
@@ -23,7 +24,7 @@ router.get('/healthcheck', (req, res, next) => {
 // Get all lists
 router.get('/lists', async (req, res, next) => {
     try{
-        return res.json(await Models.ToDoList.getAll());
+        return res.json(await ToDoListService.getAllLists());
     }
     catch(e){ return sendError(res, e) }
 });
