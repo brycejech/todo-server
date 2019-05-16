@@ -153,7 +153,7 @@ router.get('/items/:id', async (req, res, next) => {
 });
 
 router.post('/items', async (req, res, next) => {
-    const { title, list, description } = req.body;
+    const { title, list, description, meta } = req.body;
 
     if(!(list && title)){
         return res.status(400).json({
@@ -162,7 +162,7 @@ router.post('/items', async (req, res, next) => {
     }
 
     try{
-        const item = await Models.ToDoItem.create({ title, list, description });
+        const item = await Models.ToDoItem.create({ title, list, description, meta });
 
         return res.status(201).json(item);
     }
@@ -179,7 +179,7 @@ router.put('/items/:id', async (req, res, next) => {
 
         // Only allow certain props to be set by user
         const allowedProps = [
-            'title', 'description', 'complete', 'due'
+            'title', 'description', 'complete', 'due', 'meta'
         ];
         allowedProps.forEach(prop => {
             if(req.body.hasOwnProperty(prop)){
