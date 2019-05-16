@@ -5,6 +5,7 @@ SELECT
     title,
     slug,
     description,
+    meta,
     created,
     modified
 
