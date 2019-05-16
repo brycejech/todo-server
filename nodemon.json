@@ -1,4 +1,4 @@
 {
     "verbose": true,
-    "watch": [ "*.sql" ]
+    "ext": "js,json,sql"
 }
