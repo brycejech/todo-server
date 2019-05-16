@@ -42,7 +42,7 @@ router.get('/lists/:id', async (req, res, next) => {
 });
 
 router.post('/lists', async (req, res, next) => {
-    const { title, description } = req.body;
+    const { title, description, meta } = req.body;
 
     if(!title){
         return res.status(400).json({
@@ -51,7 +51,7 @@ router.post('/lists', async (req, res, next) => {
     }
 
     try{
-        const list = await Models.ToDoList.create({ title, description });
+        const list = await Models.ToDoList.create({ title, description, meta });
 
         return res.status(201).json(list);
     }
@@ -66,11 +66,23 @@ router.put('/lists/:id', async (req, res, next) => {
 
         if(!list){ return notFound(res) }
 
-        const allowedProps = [ 'title', 'description' ];
+        const allowedProps = [ 'title', 'description', 'meta' ];
 
         allowedProps.forEach(prop => {
             if(req.body.hasOwnProperty(prop)){
-                list[prop] = req.body[prop];
+                if(prop === 'meta'){
+                    if(typeof req.body.meta !== 'string'){
+                        try{
+                            list.meta = JSON.stringify(req.body.meta);
+                        }
+                        catch(e){
+                            list.meta = req.body.meta;
+                        }
+                    }
+                }
+                else{
+                    list[prop] = req.body[prop];
+                }
             }
         });
 
