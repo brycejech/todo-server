@@ -9,8 +9,15 @@ SET
     complete    = $5,
     list        = $6,
     due         = $7,
+    meta        = $8,
+    modified    = now() at time zone 'utc'
 
-    modified = now() at time zone 'utc'
+    completed_on =
+        CASE
+            WHEN $5 IS TRUE AND completed_on IS NULL     THEN now() at time zone 'utc'
+            WHEN $5 IS TRUE AND completed_on IS NOT NULL THEN completed_on
+            ELSE NULL
+        END,
 
 WHERE
     id = $1
