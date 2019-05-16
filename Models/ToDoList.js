@@ -15,26 +15,37 @@ function ToDoList(o){
     this.modified    = o.modified;
     this.items       = [];
 
+    try{
+        this.meta = JSON.parse(o.meta);
+    }
+    catch(e){
+        console.log('Failed to parse meta as JSON');
+        this.meta = o.meta;
+    }
+
     return this;
 }
 
 ToDoList.prototype.save = async function saveToDoList(){
     const params = [
-        this.id, this.title, slugify(this.title), this.description
+        this.id, this.title, slugify(this.title), this.description, this.meta
     ];
 
     try{
         const updated = await db.q('todo-list-update', params);
 
-        this.id          = updated.id;
-        this.uuid        = updated.uuid;
-        this.title       = updated.title;
-        this.slug        = updated.slug;
-        this.description = updated.description;
-        this.created     = updated.created;
-        this.modified    = updated.modified;
+        return new ToDoList(updated);
 
-        return this;
+        // this.id          = updated.id;
+        // this.uuid        = updated.uuid;
+        // this.title       = updated.title;
+        // this.slug        = updated.slug;
+        // this.description = updated.description;
+        // this.meta        = updated.meta;
+        // this.created     = updated.created;
+        // this.modified    = updated.modified;
+        //
+        // return this;
     }
     catch(e){
         return false;
@@ -59,7 +70,7 @@ ToDoList.create = async function createToDoList(o){
     }
 
     const params = [
-        uuid(), o.title, slugify(o.title), o.description
+        uuid(), o.title, slugify(o.title), o.description, o.meta
     ];
 
     try{
